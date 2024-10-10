@@ -98,6 +98,24 @@ func updateUser(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	// get ID
+	path := r.URL.Path
+	var id string
+	segments := strings.Split(path, "/")
+	if len(segments) == 3 && segments[1] == "tasks" {
+		id = segments[2]
+	}
+	for index, value := range data {
+		if value.ID == id {
+			data = append(data[:index], data[index+1:]...)
+			return
+		}
+	}
+	fmt.Fprint(w, "Data successfully deleted")
+	getAllUsers(w)
+
+}
 func handleMethod(w http.ResponseWriter, r *http.Request) {
 	method := r.Method
 	switch method {
@@ -107,6 +125,8 @@ func handleMethod(w http.ResponseWriter, r *http.Request) {
 		getUser(w, r)
 	case http.MethodPut:
 		updateUser(w, r)
+	case http.MethodDelete:
+		deleteUser(w, r)
 	}
 }
 
